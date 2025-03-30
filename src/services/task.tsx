@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { Task } from "@/types/Task";
+import { baseQueryWithErrorHandling } from "@/services/baseQueryWithErrorHandling.ts";
 
 interface CreateTaskRequest {
   text: string;
@@ -11,7 +12,7 @@ interface UpdateTaskRequest {
 
 export const taskApi = createApi({
   reducerPath: "taskApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
+  baseQuery: baseQueryWithErrorHandling,
   endpoints: (builder) => ({
     getAllTasks: builder.query<Task[], void>({
       query: () => "tasks",
@@ -51,6 +52,22 @@ export const taskApi = createApi({
         url: `tasks/${id}/complete`,
         method: "POST",
       }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          taskApi.util.updateQueryData("getAllTasks", undefined, (draft) => {
+            const task = draft.find((task) => task.id === id);
+            if (task) {
+              task.completed = true;
+              task.completedDate = Date.now();
+            }
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
 
     incompleteTask: builder.mutation<Task, string>({
@@ -58,6 +75,22 @@ export const taskApi = createApi({
         url: `tasks/${id}/incomplete`,
         method: "POST",
       }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          taskApi.util.updateQueryData("getAllTasks", undefined, (draft) => {
+            const task = draft.find((task) => task.id === id);
+            if (task) {
+              task.completed = false;
+              task.completedDate = undefined;
+            }
+          }),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
     }),
   }),
 });

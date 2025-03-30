@@ -3,5 +3,5 @@ export type Task = {
   text: string;
   completed: boolean;
   createdDate: number;
-  completedDate: number;
+  completedDate?: number;
 };

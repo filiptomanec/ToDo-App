@@ -1,34 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { useGetAllTasksQuery } from "@/services/task.ts";
 import { toast } from "sonner";
+import { DataTable } from "@/components/data-table/data-table.tsx";
+import { columns } from "@/components/data-table/columns.tsx";
+import { useGetAllTasksQuery } from "@/services/task.tsx";
 
 function App() {
-  const { data, error, isLoading, refetch } = useGetAllTasksQuery();
+  const { data, isLoading, refetch } = useGetAllTasksQuery();
 
-  if (error) {
-    toast.error("Error loading tasks", {
-      description: "An error occurred while fetching tasks.",
-      action: (
-        <Button variant="outline" onClick={() => refetch()}>
-          Try Again
-        </Button>
-      ),
-    });
-  }
+  const handleAddRow = async () => {
+    try {
+      await refetch();
+      toast.success("Task added successfully");
+    } catch (error) {
+      toast.error("Failed to add task");
+    }
+  };
 
   if (isLoading) return <div>loading</div>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh">
-      <div className="flex flex-col w-100">
-        {data?.map((task) => (
-          <div key={task.id} className="flex items-center justify-between">
-            <p>{task.text}</p>
-            <Button variant="outline">Edit</Button>
-          </div>
-        ))}
+    data && (
+      <div className="flex justify-center p-50">
+        {data && (
+          <DataTable columns={columns} data={data} onRowAdd={handleAddRow} />
+        )}
       </div>
-    </div>
+    )
   );
 }
 

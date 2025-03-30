@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { taskApi } from "@/services/task.ts";
+import { taskApi } from "@/services/task.tsx";
 
 export const store = configureStore({
   reducer: {
