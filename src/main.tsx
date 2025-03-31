@@ -3,14 +3,14 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "react-redux";
-import { store } from "@/store.ts";
+import { store } from "@/redux/store.ts";
 import { Toaster } from "sonner";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <Toaster richColors />
-      <App />
-    </Provider>
-  </StrictMode>,
+    <StrictMode>
+        <Provider store={store}>
+            <Toaster richColors />
+            <App />
+        </Provider>
+    </StrictMode>,
 );
