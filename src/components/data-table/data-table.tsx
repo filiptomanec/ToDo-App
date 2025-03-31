@@ -20,10 +20,12 @@ import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { SkeletonTableBody } from "@/components/data-table/skeleton-table-body.tsx";
 import { openDialog } from "@/redux/taskDialogSlice.ts";
 import { useAppDispatch } from "@/redux/redux-hooks.ts";
+import { Task } from "@/types/Task.ts";
+import { useDeleteTaskMutation } from "@/services/task.tsx";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -37,6 +39,8 @@ export function DataTable<TData, TValue>({
     isLoading,
 }: DataTableProps<TData, TValue>) {
     const dispatch = useAppDispatch();
+    const [deleteTask, { isLoading: isLoadingDelete }] =
+        useDeleteTaskMutation();
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
@@ -53,6 +57,10 @@ export function DataTable<TData, TValue>({
             columnFilters,
         },
     });
+
+    const completedTasks = table
+        .getRowModel()
+        .rows.filter((row) => (row.original as Task).completed);
 
     return (
         <div className="flex flex-col gap-4 w-200">
@@ -155,6 +163,21 @@ export function DataTable<TData, TValue>({
                         )}
                     </TableBody>
                 </Table>
+            </div>
+            <div className="flex justify-between items-center">
+                <span>{completedTasks.length} completed</span>
+                <Button
+                    variant="destructive"
+                    onClick={() => {
+                        completedTasks.forEach((task) =>
+                            deleteTask((task.original as Task).id),
+                        );
+                    }}
+                    disabled={isLoadingDelete || completedTasks.length === 0}
+                >
+                    {isLoadingDelete && <Loader2 className="animate-spin" />}
+                    {isLoadingDelete ? "Deleting..." : "Delete Completed Tasks"}
+                </Button>
             </div>
         </div>
     );
