@@ -7,7 +7,7 @@ function App() {
     const { data, isLoading } = useGetAllTasksQuery();
 
     return (
-        <div className="flex justify-center p-50">
+        <div className="flex justify-center h-screen p-5 md:p-10">
             <DataTable
                 columns={columns}
                 data={data ?? []}

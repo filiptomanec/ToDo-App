@@ -20,6 +20,12 @@ import { handleSortingChange } from "@/lib/utils.ts";
 import { useAppDispatch } from "@/redux/redux-hooks.ts";
 import { openDialog } from "@/redux/taskDialogSlice.ts";
 
+declare module "@tanstack/react-table" {
+    interface ColumnMeta<TData, TValue> {
+        className?: string;
+    }
+}
+
 export const columns: ColumnDef<Task>[] = [
     {
         accessorKey: "completed",
@@ -126,6 +132,7 @@ export const columns: ColumnDef<Task>[] = [
             const date = new Date(row.getValue("createdDate"));
             return date.toLocaleDateString();
         },
+        meta: { className: "hidden md:table-cell" },
     },
     {
         accessorKey: "completedDate",
@@ -154,10 +161,12 @@ export const columns: ColumnDef<Task>[] = [
             const date = new Date(completedDate);
             return date.toLocaleDateString();
         },
+        meta: { className: "hidden sm:table-cell" },
     },
     {
         id: "actions",
         header: "Actions",
+        size: 0,
         cell: ({ row }) => {
             const task = row.original;
             const dispatch = useAppDispatch();

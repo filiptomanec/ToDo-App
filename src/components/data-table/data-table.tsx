@@ -26,6 +26,7 @@ import { openDialog } from "@/redux/taskDialogSlice.ts";
 import { useAppDispatch } from "@/redux/redux-hooks.ts";
 import { Task } from "@/types/Task.ts";
 import { useDeleteTaskMutation } from "@/services/task.tsx";
+import { cn } from "@/lib/utils.ts";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -63,7 +64,7 @@ export function DataTable<TData, TValue>({
         .rows.filter((row) => (row.original as Task).completed);
 
     return (
-        <div className="flex flex-col gap-4 w-200">
+        <div className="flex flex-col gap-4 w-full max-w-200">
             <div className="flex justify-between items-end">
                 <div className="flex flex-col gap-3">
                     <Label htmlFor="filter">Filter by:</Label>
@@ -112,7 +113,11 @@ export function DataTable<TData, TValue>({
                                     return (
                                         <TableHead
                                             key={header.id}
-                                            className="bg-gray-50"
+                                            className={cn(
+                                                header.column.columnDef.meta
+                                                    ?.className,
+                                                "bg-gray-50",
+                                            )}
                                         >
                                             {header.isPlaceholder
                                                 ? null
@@ -142,7 +147,13 @@ export function DataTable<TData, TValue>({
                                     }
                                 >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell
+                                            key={cell.id}
+                                            className={
+                                                cell.column.columnDef.meta
+                                                    ?.className
+                                            }
+                                        >
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext(),
