@@ -1,54 +1,52 @@
-# React + TypeScript + Vite
+# Todo App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This application allows task management with support for adding, deleting, editing, and marking tasks as completed.
+Tasks are persisted by connecting to a backend service.
 
-Currently, two official plugins are available:
+## 🚀 Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Clone the Repository
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```sh
+git clone https://github.com/your-username/todo-app.git
+cd todo-app
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```sh
+npm install
 ```
+
+### 3. Start the Application
+
+```sh
+npm run dev
+```
+
+The app will run on `http://localhost:5173/`.
+
+### 4. Start the Backend
+
+The backend runs separately on `http://localhost:8080/`.
+
+## 📌 Features
+
+- Add, delete, and edit tasks
+- Mark tasks as completed
+- Filter tasks (completed / incomplete)
+- Mark all visible tasks as completed
+- Bulk delete completed tasks
+- Display the count of completed tasks
+- Handle error cases when communicating with the backend
+
+## 🛠 Technologies Used
+
+- **React / TypeScript**
+- **Redux & Redux Toolkit** – State management
+- **RTK Query** – Efficient backend communication
+- **Shadcn/ui** – UI components
+- **Tailwind CSS** – Styling framework
+
+---
+**Author:** Filip Tomanec | [GitHub](https://github.com/filiptomanec)
