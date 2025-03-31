@@ -3,12 +3,14 @@
 This application allows task management with support for adding, deleting, editing, and marking tasks as completed.
 Tasks are persisted by connecting to a backend service.
 
+![Todo App Screenshot](/src/assets/screenshot.png)
+
 ## 🚀 Getting Started
 
 ### 1. Clone the Repository
 
 ```sh
-git clone https://github.com/your-username/todo-app.git
+git clone https://github.com/filiptomanec/ToDo-App.git
 cd todo-app
 ```
 
