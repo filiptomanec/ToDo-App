@@ -6,7 +6,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog.tsx";
 import { TaskForm } from "@/components/task-form.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/components/ui/button/button.tsx";
 import { Loader2 } from "lucide-react";
 import { useDeleteTaskMutation } from "@/services/task.tsx";
 import { useAppDispatch, useAppSelector } from "@/redux/redux-hooks.ts";

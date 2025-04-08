@@ -19,7 +19,7 @@ import {
 import { useState } from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/components/ui/button/button.tsx";
 import { Loader2, Plus } from "lucide-react";
 import { SkeletonTableBody } from "@/components/data-table/skeleton-table-body.tsx";
 import { openDialog } from "@/redux/taskDialogSlice.ts";
@@ -53,6 +53,7 @@ export function DataTable<TData, TValue>({
         getSortedRowModel: getSortedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         getFilteredRowModel: getFilteredRowModel(),
+        enableRowSelection: true,
         state: {
             sorting,
             columnFilters,
@@ -66,11 +67,12 @@ export function DataTable<TData, TValue>({
     return (
         <div className="flex flex-col gap-4 w-full max-w-200">
             <div className="flex justify-between items-end">
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col md:flex-row gap-3">
                     <Label htmlFor="filter">Filter by:</Label>
                     <RadioGroup
                         defaultValue="all"
                         id="filter"
+                        className="flex flex-col md:flex-row"
                         value={
                             (table
                                 .getColumn("completed")

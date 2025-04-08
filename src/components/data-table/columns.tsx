@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Task } from "@/types/Task.tsx";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/components/ui/button/button.tsx";
 import {
     ArrowDown01,
     ArrowDownAZ,
@@ -15,33 +15,46 @@ import {
     useCompleteTaskMutation,
     useIncompleteTaskMutation,
 } from "@/services/task.tsx";
-import { useEffect } from "react";
 import { handleSortingChange } from "@/lib/utils.ts";
-import { useAppDispatch } from "@/redux/redux-hooks.ts";
 import { openDialog } from "@/redux/taskDialogSlice.ts";
+import { AppDispatch } from "@/redux/store.ts";
+import { TaskCompletedCell } from "@/components/data-table/task-completed-cell.tsx";
 
 declare module "@tanstack/react-table" {
+    // Type parameters are required by the library but unused here.
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface ColumnMeta<TData, TValue> {
         className?: string;
     }
 }
 
-export const columns: ColumnDef<Task>[] = [
+interface GetColumnsProps {
+    completeTask: ReturnType<typeof useCompleteTaskMutation>[0];
+    incompleteTask: ReturnType<typeof useIncompleteTaskMutation>[0];
+    dispatch: AppDispatch;
+}
+
+export const getColumns = ({
+    completeTask,
+    incompleteTask,
+    dispatch,
+}: GetColumnsProps): ColumnDef<Task>[] => [
     {
         accessorKey: "completed",
         header: ({ table }) => {
-            const [completeTask] = useCompleteTaskMutation();
-            const [incompleteTask] = useIncompleteTaskMutation();
-
             const handleToggleAll = async (checked: boolean) => {
                 const tasks = table
                     .getRowModel()
                     .rows.map((row) => row.original)
                     .filter((task) => task.completed !== checked);
 
-                tasks.forEach((task) => {
-                    checked ? completeTask(task.id) : incompleteTask(task.id);
-                });
+                await Promise.all(
+                    tasks.map((task) =>
+                        checked
+                            ? completeTask(task.id)
+                            : incompleteTask(task.id),
+                    ),
+                );
             };
 
             return (
@@ -56,27 +69,9 @@ export const columns: ColumnDef<Task>[] = [
                 />
             );
         },
-        cell: ({ row, getValue }) => {
-            const [completeTask] = useCompleteTaskMutation();
-            const [incompleteTask] = useIncompleteTaskMutation();
-
-            useEffect(() => {
-                row.toggleSelected(Boolean(getValue()));
-            }, [row, getValue]);
-
-            const handleCheckedChange = async (checked: boolean) => {
-                checked
-                    ? await completeTask(row.original.id)
-                    : await incompleteTask(row.original.id);
-            };
-
-            return (
-                <Checkbox
-                    checked={Boolean(getValue())}
-                    onCheckedChange={handleCheckedChange}
-                />
-            );
-        },
+        cell: ({ row, getValue }) => (
+            <TaskCompletedCell row={row} getValue={getValue as () => boolean} />
+        ),
         filterFn: (row, columnId, filterValue) => {
             if (filterValue === "all") return true;
             if (filterValue === "completed") return row.getValue(columnId);
@@ -169,8 +164,6 @@ export const columns: ColumnDef<Task>[] = [
         size: 0,
         cell: ({ row }) => {
             const task = row.original;
-            const dispatch = useAppDispatch();
-
             return (
                 <div>
                     <Button
